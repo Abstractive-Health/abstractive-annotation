@@ -3,27 +3,17 @@ import RedirectButton from "../components/redirectButton";
 import Table from "../components/table.js";
 import Cookies from "js-cookie";
 import { useNavigate } from 'react-router-dom';
+import { useOutletContext } from "react-router-dom";
 // import "../styling/redirectButtonStyle.css"
 
 const DownloadPage = () => {
+  const [isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin] = useOutletContext();
   const session_token = Cookies.get("session_token");
   const navigate = useNavigate();
 
   useEffect(() => {
     checkAdmin();
   }, []);
-
-  const checkAdmin = async () => {
-    try {
-        const response = await fetch(`http://localhost:3000/api/isAdmin?session_token=${session_token}`);
-        if (!response.ok) {
-            navigate('/');
-            window.alert("You are not an admin!");
-        }
-    } catch (error) {
-        console.log("Error:", error);
-    }
-  };
 
   return (
     <div className="download">

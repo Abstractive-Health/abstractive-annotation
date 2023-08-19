@@ -4,9 +4,11 @@ import { saveAs } from "file-saver";
 import RedirectButton from "../components/redirectButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import { useOutletContext } from "react-router-dom";
+
 const ReviewPage = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [jsonData, setJsonData] = useState(null);
+  const [isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin] = useOutletContext();
 
   useEffect(() => {
     const session_token = Cookies.get("session_token");
@@ -33,21 +35,6 @@ const ReviewPage = () => {
     const encodedUri = encodeURI(csvContent);
     const file = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     saveAs(file, "data.csv");
-  };
-
-  const checkAdmin = async (session_token) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/isAdmin?session_token=${session_token}`
-      );
-      if (!response.ok) {
-        setIsAuthenticated(false);
-      } else {
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.log("Error:", error);
-    }
   };
 
   const getEverything = async () => {

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import RedirectButton from "../components/redirectButton";
-import "../styling/redirectButtonStyle.css";
-import "../components/loginButton"
-import LoginButton from "../components/loginButton";
-import '../styling/Home.css';
+import { Outlet } from 'react-router-dom';
 
-function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  // const [cookies, setCookie, removeCookie] = useCookies(['session_token']);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     const session_token = Cookies.get("session_token");
@@ -18,47 +16,20 @@ function Home() {
     try {
         const response = await fetch(`http://localhost:3000/api/isAdmin?session_token=${session_token}`);
         if (!response.ok) {
-            setIsAuthenticated(false);
+          setIsAdmin(false);
         } else {
-            setIsAuthenticated(true);
+          setIsAdmin(true);
         }
     } catch (error) {
-        console.log("Error:", error);
+        console.log("Not Authenticated as Admin:", error);
     }
   };
-  
+  console.log('isAdmin', isAdmin, 'isSignedIn', isSignedIn)
   return (
     <div className="App">
-      <h1 className="abstractivetitle">Abstractive Health</h1>
-      <nav>
-        <RedirectButton buttonText="Home" buttonUrl="/home" />
-        {isAuthenticated && (
-          <>
-            <RedirectButton buttonText="Upload" buttonUrl="/upload" />
-            <RedirectButton buttonText="Customize" buttonUrl="/customize" />
-            </>
-        )}
-        <RedirectButton buttonText="Annotate" buttonUrl="/annotate" />
-        {isAuthenticated && (
-          <>
-            <RedirectButton buttonText="Download" buttonUrl="/download" />
-            <RedirectButton buttonText="Admin" buttonUrl="/admin" />
-            </>
-        )}
-
-
-        <h4 className="centered">
-        Abstractive Health allows physicians to spend less time reading and writing their clinical notes and improves their revenue reimbursement from insurance companies. Our automated patient summary is a game-changer as it improves interoperability so patients receive better care. Anote's annotation interface help annotators provide the training data for these LLMs.
-        </h4 >
-        <h4 className="centered">Get started here:</h4>
-      <LoginButton className="button-container"/>
-
-      <button className="button-container ButtonType2">
-        <a href="/signup">Sign Up</a>
-      </button>
-      </nav>
+      <Outlet context={[isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin]} />
     </div>
   );
 }
 
-export default Home;
+export default App;

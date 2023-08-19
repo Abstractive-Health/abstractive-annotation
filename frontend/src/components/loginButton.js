@@ -4,17 +4,15 @@ import { useCookies } from 'react-cookie';
 import Cookies from 'js-cookie';
 import '../styling/Home.css';
 
-const LoginButton = () => {
+const LoginButton = (props) => {
   const [cookies, setCookie, removeCookie] = useCookies(['session_token']);
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const navigate = useNavigate();
-
   useEffect(() => {
-    setIsSignedIn(cookies.session_token !== undefined);
-  }, [cookies, isSignedIn]);
+    props.setIsSignedIn(cookies.session_token !== undefined);
+  }, [cookies, props.isSignedIn]);
 
   const handleClick = () => {
-    if (isSignedIn) {
+    if (props.isSignedIn) {
       fetch('http://localhost:3000/api/logout', {
         method: 'GET',
       }).then((res) => {
@@ -33,7 +31,7 @@ const LoginButton = () => {
   return (
     <div>
       <button onClick={handleClick} className='button-container'>
-        {isSignedIn ? 'Logout' : 'Login'}
+        {props.isSignedIn ? 'Logout' : 'Login'}
       </button>
     </div>
   );

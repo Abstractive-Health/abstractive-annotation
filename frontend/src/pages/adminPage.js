@@ -2,8 +2,10 @@ import React, { useEffect, useReducer, useState } from "react";
 import RedirectButton from "../components/redirectButton";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const AdminPage = () => {
+  const [isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin] = useOutletContext();
   const session_token = Cookies.get("session_token");
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -184,20 +186,6 @@ const AdminPage = () => {
     } else {
       const data = await response.json();
       setJsonData(data); // JSON.parse is not needed as response.json() already parses the response.
-    }
-  };
-
-  const checkAdmin = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/isAdmin?session_token=${session_token}`
-      );
-      if (!response.ok) {
-        navigate("/");
-        window.alert("You are not an admin!");
-      }
-    } catch (error) {
-      console.log("Error:", error);
     }
   };
 

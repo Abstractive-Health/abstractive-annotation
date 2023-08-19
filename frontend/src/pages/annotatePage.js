@@ -4,13 +4,14 @@ import RedirectButton from "../components/redirectButton";
 import "bulma/css/bulma.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useOutletContext } from "react-router-dom";
 
 const AnnotatePage = () => {
+  const [isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin] = useOutletContext();
   const [fileNames, setFileNames] = useState([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState(0);
   const [filePreview, setFilePreview] = useState(null);
   const [isFinished, setIsFinished] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [questions_and_answers, setquestions_and_answers] = useState([]);
   const [answer, setAnswer] = useState({});
 
@@ -33,21 +34,6 @@ const AnnotatePage = () => {
   useEffect(() => {
     fetchFinishedFiles();
   }, [fileNames, selectedFileIndex]);
-
-  const checkAdmin = async (session_token) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/isAdmin?session_token=${session_token}`
-      );
-      if (!response.ok) {
-        setIsAdmin(false);
-      } else {
-        setIsAdmin(true);
-      }
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
 
   const getQuestionsAndAnswers = async () => {
     try {
@@ -125,6 +111,9 @@ const AnnotatePage = () => {
       const sortedData = data.sort(
         (a, b) => finishedFiles.includes(a) - finishedFiles.includes(b)
       );
+      console.log('Allowed files', data)
+      console.log('FinishedFiles', finishedFiles)
+      console.log('sortedData', sortedData)
       setFileNames(sortedData);
       if (sortedData.length > 0) {
         handleFileChange(sortedData[0]);
@@ -289,7 +278,7 @@ const AnnotatePage = () => {
                     <textarea
                       id="message"
                       rows="15"
-                      class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder={
                         q_and_a.answer ? "" : "Write your answer here..."
                       }

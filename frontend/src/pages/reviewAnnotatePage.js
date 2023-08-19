@@ -10,13 +10,14 @@ import {
   faThumbsDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const ReviewAnnotatePage = () => {
+  const [isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin] = useOutletContext();
   const [fileNames, setFileNames] = useState([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState(0);
   const [filePreview, setFilePreview] = useState(null);
   const [isFinished, setIsFinished] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [questions_and_answers, setquestions_and_answers] = useState([]);
   const [answer, setAnswer] = useState({});
   const [thumbsUp, setThumbsUp] = useState(false);
@@ -42,21 +43,6 @@ const ReviewAnnotatePage = () => {
   useEffect(() => {
     fetchFinishedFiles();
   }, [fileNames, selectedFileIndex]);
-
-  const checkAdmin = async (session_token) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/isAdmin?session_token=${session_token}`
-      );
-      if (!response.ok) {
-        setIsAdmin(false);
-      } else {
-        setIsAdmin(true);
-      }
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
 
   const getQuestionsAndAnswers = async () => {
     try {
