@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  prod-backend:
+  server:
     image: prod-ah-annotations-backend:latest
     build:
       context: ./backend
@@ -9,7 +9,9 @@ services:
     stop_signal: SIGINT
     ports:
       - 3000:3000
-  prod-frontend:
+    expose:
+      - 3000
+  client:
     image: prod-ah-annotations-frontend:latest
     build:
       context: ./frontend
@@ -17,5 +19,7 @@ services:
     stop_signal: SIGINT
     ports:
       - 3001:3001
+    expose:
+      - 3001
     env_file:
       - ./frontend/.env

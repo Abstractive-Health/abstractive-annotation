@@ -17,6 +17,7 @@ RUN npm install react-scripts -g
 
 # add app to build
 COPY . ./
+
 RUN npm run build
 
 ##############################################################
@@ -29,6 +30,8 @@ RUN npm install serve -g
 
 # Copy build artifacts from build image
 COPY --from=build /app/build /app/build/
+
+EXPOSE $PORT
 
 # run npm start from package json
 CMD ["npm","start"] 
