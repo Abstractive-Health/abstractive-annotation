@@ -124,7 +124,8 @@ const UploadPage = () => {
                 console.error(payload['question'] + " annotation upload failure "));
             })
             Promise.all(httpCalls).then(() => {
-              navigate("/reviewAnnotate", { state: { info: results.data } });
+              // navigate("/reviewAnnotate", { state: { info: results.data } });
+              navigate("/annotate");
             })
           },
         });
