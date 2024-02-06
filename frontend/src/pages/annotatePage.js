@@ -172,6 +172,7 @@ const AnnotatePage = () => {
                 style={{
                   whiteSpace: "pre-wrap",
                   wordWrap: "break-word",
+                  textAlign: "left"
                 }}
               >
                 {text}
