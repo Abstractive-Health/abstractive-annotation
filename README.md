@@ -11,9 +11,12 @@ Send/Email Docker Image to many architectures (AMD/ARM64) - See Vince and Ritika
 ## Run Docker 
 0. The build architecture (AMD64 vs ARM64) matters. Check the `cpu_arch` used for `abstractive-annotations` inside abstractive Infra. If you're running a different architecture, checkout Docker directions for [multi-platform builds]( https://docs.docker.com/build/building/multi-platform/).
 1. Run `docker-compose up -d --build` to start
-    * `-d` starts up in detached mode
+    * `-d` starts up in detached mode (detached from your terminal window)
 2. Run `docker-compose down` to stop
 
 ## Run a Docker Image
 1. Run Backend `docker run -p 3000:3000 prod-ah-annotations-backend:latest`
 1. Run Frontend `docker run -p 3001:3001 prod-ah-annotations-frontend:latest`
+
+# Run docker compose for development (Hot reloading)
+`docker-compose -f docker-compose-dev.yml up -d --build`
