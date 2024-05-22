@@ -8,8 +8,10 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH for hot reloading
 ENV PATH /app/node_modules/.bin:$PATH
 
+# update npm to latest
+RUN npm install npm@latest -g
+
 # install app dependencies (node_modules) 
-# npm ci will remove any previous existing node modules
 COPY package*.json ./
 RUN npm install
 RUN npm install react-scripts -g
