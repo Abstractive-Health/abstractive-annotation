@@ -43,7 +43,7 @@ function Download() {
   };
 
   const getEverything = async () => {
-    const response = await fetch("http://localhost:3000/api/everything", {
+    const response = await fetch(`${process.env.HOST}/api/everything`, {
       method: "GET",
     });
     if (!response.ok) {
