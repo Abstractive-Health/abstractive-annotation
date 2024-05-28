@@ -6,7 +6,7 @@ import Papa from "papaparse";
 import axios from "axios";
 import { Button, Checkbox, Table } from "flowbite-react";
 
-axios.defaults.baseURL = `${process.env.HOST}`;
+axios.defaults.baseURL = `${process.env.API_HOST}`;
 
 const UploadPage = () => {
   const navigate = useNavigate();
@@ -113,7 +113,7 @@ const UploadPage = () => {
           complete: (results) => {
             const payloads = organizeDataToPayloads(results.data);
             const httpCalls = payloads.map((payload) => {
-              return fetch(`${process.env.HOST}/api/answer`, {
+              return fetch(`${process.env.API_HOST}/api/answer`, {
                 method: "PATCH",
                 headers: {
                   "Content-Type": "application/json",

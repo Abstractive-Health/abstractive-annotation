@@ -49,7 +49,7 @@ const ReviewAnnotatePage = () => {
   const getQuestionsAndAnswers = async () => {
     try {
       const response = await fetch(
-        `${process.env.HOST}/api/qa?fileName=${filename}`,
+        `${process.env.API_HOST}/api/qa?fileName=${filename}`,
         {
           method: "GET",
         }
@@ -86,7 +86,7 @@ const ReviewAnnotatePage = () => {
       return;
     }
 
-    const response = await fetch(`${process.env.HOST}/api/answer`, {
+    const response = await fetch(`${process.env.API_HOST}/api/answer`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const ReviewAnnotatePage = () => {
   //     return;
   //   }
 
-  //   const response = await fetch(`${process.env.HOST}/api/answer`, {
+  //   const response = await fetch(`${process.env.API_HOST}/api/answer`, {
   //     method: "PATCH",
   //     headers: {
   //       "Content-Type": "application/json",
@@ -148,7 +148,7 @@ const ReviewAnnotatePage = () => {
     try {
       const data = location.state.info.map((item) => item["File Name"]);
       const finishedFilesResponse = await fetch(
-        `${process.env.HOST}/api/getFinished`
+        `${process.env.API_HOST}/api/getFinished`
       );
 
       console.log("data1");
@@ -161,7 +161,7 @@ const ReviewAnnotatePage = () => {
       for (let i = 0; i < sortedData.length; i++) {
         setLoader(i + 1);
         const response = await fetch(
-          `${process.env.HOST}/api/files?filename=${encodeURIComponent(
+          `${process.env.API_HOST}/api/files?filename=${encodeURIComponent(
             sortedData[i]
           )}`
         );
@@ -183,7 +183,7 @@ const ReviewAnnotatePage = () => {
 
   const fetchFinishedFiles = async () => {
     try {
-      const response = await fetch(`${process.env.HOST}/api/getFinished`);
+      const response = await fetch(`${process.env.API_HOST}/api/getFinished`);
       const finishedFiles = await response.json();
       setIsFinished(finishedFiles.includes(fileNames[selectedFileIndex]));
     } catch (error) {
@@ -193,7 +193,7 @@ const ReviewAnnotatePage = () => {
 
   const handleFileChange = async (filename, attempt = 0) => {
     const response = await fetch(
-      `${process.env.HOST}/api/files?filename=${encodeURIComponent(filename)}`
+      `${process.env.API_HOST}/api/files?filename=${encodeURIComponent(filename)}`
     );
     if (!response.ok) {
       console.error(`Error fetching file ${filename}: ${response.statusText}`);
@@ -288,7 +288,7 @@ const ReviewAnnotatePage = () => {
     };
 
     try {
-      const response = await fetch(`${process.env.HOST}${endpoint}`, options);
+      const response = await fetch(`${process.env.API_HOST}${endpoint}`, options);
       if (!response.ok) {
         throw new Error(
           `Error updating finished state for file: ${response.statusText}`
@@ -301,7 +301,7 @@ const ReviewAnnotatePage = () => {
   };
 
   const handleThumbsUp = async (question, filename) => {
-    const response = await fetch(`${process.env.HOST}/api/thumbsUp`, {
+    const response = await fetch(`${process.env.API_HOST}/api/thumbsUp`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -321,7 +321,7 @@ const ReviewAnnotatePage = () => {
   };
 
   const handleThumbsDown = async (question, filename) => {
-    const response = await fetch(`${process.env.HOST}/api/thumbsDown`, {
+    const response = await fetch(`${process.env.API_HOST}/api/thumbsDown`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

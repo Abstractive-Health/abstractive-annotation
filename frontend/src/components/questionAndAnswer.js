@@ -15,7 +15,7 @@ const QuestionAndAnswer = (props) => {
   const getQuestionsAndAnswers = async () => {
     try {
       const response = await fetch(
-        `${process.env.HOST}api/qa?fileName=${filename}`,
+        `${process.env.API_HOST}api/qa?fileName=${filename}`,
         {
           method: "GET",
         }
@@ -48,7 +48,7 @@ const QuestionAndAnswer = (props) => {
       return;
     }
 
-    const response = await fetch(`${process.env.HOST}/api/answer`, {
+    const response = await fetch(`${process.env.API_HOST}/api/answer`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

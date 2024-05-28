@@ -13,7 +13,7 @@ const LoginButton = (props) => {
 
   const handleClick = () => {
     if (props.isSignedIn) {
-      fetch(`${process.env.HOST}/api/logout`, {
+      fetch(`${process.env.API_HOST}/api/logout`, {
         method: 'GET',
       }).then((res) => {
         if (res.status === 200) {

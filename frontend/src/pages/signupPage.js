@@ -22,7 +22,7 @@ function SignupPage() {
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
 
-    fetch(`${process.env.HOST}/api/signup`, {
+    fetch(`${process.env.API_HOST}/api/signup`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

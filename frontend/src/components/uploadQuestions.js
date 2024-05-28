@@ -14,7 +14,7 @@ const UploadQuestion = () => {
 
   const handleSubmit = async (file_name) => {
     try {
-      const is_admin = await fetch(`${process.env.HOST}/api/isAdmin?session_token=${session_token}`, {
+      const is_admin = await fetch(`${process.env.API_HOST}/api/isAdmin?session_token=${session_token}`, {
         method: "GET"
       });
       if (!is_admin.ok) {
@@ -26,7 +26,7 @@ const UploadQuestion = () => {
       return;  // if there's an error, we probably want to stop execution
     }
     try {
-      const response = await fetch(`${process.env.HOST}api/question`, {
+      const response = await fetch(`${process.env.API_HOST}api/question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

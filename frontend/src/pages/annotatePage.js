@@ -39,7 +39,7 @@ const AnnotatePage = () => {
   const getQuestionsAndAnswers = async () => {
     try {
       const response = await fetch(
-        `${process.env.HOST}/api/qa?fileName=${filename}`,
+        `${process.env.API_HOST}/api/qa?fileName=${filename}`,
         {
           method: "GET",
         }
@@ -74,7 +74,7 @@ const AnnotatePage = () => {
       return;
     }
 
-    const response = await fetch(`${process.env.HOST}/api/answer`, {
+    const response = await fetch(`${process.env.API_HOST}/api/answer`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const AnnotatePage = () => {
   const getFileNames = async () => {
     try {
       const response = await fetch(
-        `${process.env.HOST}/api/AllowedFiles?session_token=${session_token}`
+        `${process.env.API_HOST}/api/AllowedFiles?session_token=${session_token}`
       );
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -106,7 +106,7 @@ const AnnotatePage = () => {
       }
       const data = await response.json();
       const finishedFilesResponse = await fetch(
-        `${process.env.HOST}/api/getFinished`
+        `${process.env.API_HOST}/api/getFinished`
       );
       const finishedFiles = await finishedFilesResponse.json();
       const sortedData = data.sort(
@@ -126,7 +126,7 @@ const AnnotatePage = () => {
 
   const fetchFinishedFiles = async () => {
     try {
-      const response = await fetch(`${process.env.HOST}/api/getFinished`);
+      const response = await fetch(`${process.env.API_HOST}/api/getFinished`);
       const finishedFiles = await response.json();
       setIsFinished(finishedFiles.includes(fileNames[selectedFileIndex]));
     } catch (error) {
@@ -136,7 +136,7 @@ const AnnotatePage = () => {
 
   const handleFileChange = async (filename) => {
     const response = await fetch(
-      `${process.env.HOST}/api/files?filename=${encodeURIComponent(filename)}`
+      `${process.env.API_HOST}/api/files?filename=${encodeURIComponent(filename)}`
     );
     if (!response.ok) {
       console.error(`Error fetching file ${filename}: ${response.statusText}`);
@@ -227,7 +227,7 @@ const AnnotatePage = () => {
     };
 
     try {
-      const response = await fetch(`${process.env.HOST}${endpoint}`, options);
+      const response = await fetch(`${process.env.API_HOST}${endpoint}`, options);
       if (!response.ok) {
         throw new Error(
           `Error updating finished state for file: ${response.statusText}`

@@ -24,7 +24,7 @@ const UploadButton = ({ onSuccessfulUpload }) => {
     console.log(formData);
 
     const response = await fetch(
-      `${process.env.HOST}/api/upload?session_token=${session_token}`,
+      `${process.env.API_HOST}/api/upload?session_token=${session_token}`,
       {
         method: "POST",
         body: formData,

@@ -9,7 +9,7 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
-        fetch(`${process.env.HOST}/api/login`, {
+        fetch(`${process.env.API_HOST}/api/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

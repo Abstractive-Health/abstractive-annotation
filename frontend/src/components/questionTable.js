@@ -9,7 +9,7 @@ const QuestionTable = () => {
 
   const getQuestions = async () => {
     try {
-      const response = await fetch(`${process.env.HOST}/api/question`, {
+      const response = await fetch(`${process.env.API_HOST}/api/question`, {
         method: "GET",
       });
       if (!response.ok) {
@@ -31,7 +31,7 @@ const QuestionTable = () => {
     const session_token = Cookies.get("session_token")
 
     try {
-      const is_admin = await fetch(`${process.env.HOST}/api/isAdmin?session_token=${session_token}`, {
+      const is_admin = await fetch(`${process.env.API_HOST}/api/isAdmin?session_token=${session_token}`, {
         method: "GET"
       });
       if (!is_admin.ok) {
@@ -43,7 +43,7 @@ const QuestionTable = () => {
       return;  // if there's an error, we probably want to stop execution
     }
     const response = await fetch(
-      `${process.env.HOST}/api/question?&question=${question_to_delete}`,
+      `${process.env.API_HOST}/api/question?&question=${question_to_delete}`,
       {
         method: "DELETE",
       }

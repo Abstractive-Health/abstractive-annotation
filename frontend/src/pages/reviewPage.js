@@ -39,7 +39,7 @@ const ReviewPage = () => {
   };
 
   const getEverything = async () => {
-    const response = await fetch(`${process.env.HOST}/api/everything`, {
+    const response = await fetch(`${process.env.API_HOST}/api/everything`, {
       method: "GET",
     });
     if (!response.ok) {

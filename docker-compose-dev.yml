@@ -21,4 +21,4 @@ services:
       - /app/node_modules
       - ./frontend:/app
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.development
