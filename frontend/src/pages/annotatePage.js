@@ -172,7 +172,7 @@ const AnnotatePage = () => {
                 style={{
                   whiteSpace: "pre-wrap",
                   wordWrap: "break-word",
-                  textAlign: "left"
+                  textAlign: "left",
                 }}
               >
                 {text}
@@ -264,61 +264,56 @@ const AnnotatePage = () => {
           <div className="h-full w-3/5">{filePreview}</div>
           <div className="mx-auto w-2/5">
             <div className="text-white h-full bg-gray-800 rounded-r-lg overflow-auto">
-              <h2 className="text-white font-semibold text-xl mt-8 mx-10 text-left">
-                {fileNames[selectedFileIndex]}
-              </h2>
-              {questions_and_answers.map((q_and_a) => (
-                <div key={q_and_a.question} className="p-4">
-                  <div className="flex flex-row">
-                    <span className="w-5 h-5 -mr-3 mt-2 bg-slate-700 transform rotate-45"></span>
-                    <p className="bg-slate-700 p-4 rounded-lg">
-                      {q_and_a.question}
-                    </p>
+              <form id="qaform" method="post">
+                <div class="md:flex md:items-center mb-6">
+                  <div id="questions">
+                    <label for="ques">Write your question here </label>
+                    <input
+                      type="text"
+                      name="question1"
+                      placeholder={
+                        q_and_a.question ? "" : "Write your question here..."
+                      }
+                    />
                   </div>
-                  <div className="flex flex-col items-center mt-5">
-                    <textarea
-                      id="message"
-                      rows="15"
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+
+                  <div>
+                    <label for="ans">Write your answer here </label>
+                    <input
+                      type="text"
+                      name="answer1"
                       placeholder={
                         q_and_a.answer ? "" : "Write your answer here..."
                       }
-                      value={
-                        answer.hasOwnProperty(q_and_a.question)
-                          ? answer[q_and_a.question]
-                          : q_and_a.answer || ""
+                    />
+                  </div>
+
+                  <div>
+                    <input
+                      type="button"
+                      onClick={handlePrevious}
+                      disabled={selectedFileIndex === 0}
+                      value="Previous"
+                    />
+                    <input
+                      typey="button"
+                      onClick={() => q_and_a.question++}
+                      value="Add Question"
+                    />
+                    <input
+                      type="submit"
+                      onClick={() =>
+                        handleUpdateAnswer(
+                          q_and_a.question,
+                          answer[q_and_a.question],
+                          filename
+                        )
                       }
-                      onChange={(event) =>
-                        handleAnswerChange(q_and_a.question, event)
-                      }
-                    ></textarea>
-                    <div className="flex flex-row">
-                      <button
-                        className="text-white bg-slate-400 p-2 rounded-md mx-2"
-                        onClick={handlePrevious}
-                        disabled={selectedFileIndex === 0}
-                      >
-                        <FontAwesomeIcon className="pr-2" icon={faArrowLeft} />
-                        Previous
-                      </button>
-                      <button
-                        className="button bg-slate-800 text-white hover:text-black hover:bg-white"
-                        onClick={() =>
-                          handleUpdateAnswer(
-                            q_and_a.question,
-                            answer[q_and_a.question],
-                            filename
-                          )
-                        }
-                      >
-                        {" "}
-                        Confirm
-                        <FontAwesomeIcon className="pl-2" icon={faArrowRight} />
-                      </button>
-                    </div>
+                      value="Submit"
+                    />
                   </div>
                 </div>
-              ))}
+              </form>
             </div>
           </div>
         </div>
@@ -328,3 +323,55 @@ const AnnotatePage = () => {
 };
 
 export default AnnotatePage;
+
+//  <h2 className="text-white font-semibold text-xl mt-8 mx-10 text-left">
+//    {fileNames[selectedFileIndex]}
+//  </h2>;
+//  {
+//    questions_and_answers.map((q_and_a) => (
+//      <div key={q_and_a.question} className="p-4">
+//        <div className="flex flex-row">
+//          <span className="w-5 h-5 -mr-3 mt-2 bg-slate-700 transform rotate-45"></span>
+//          <p className="bg-slate-700 p-4 rounded-lg">{q_and_a.question}</p>
+//        </div>
+//        <div className="flex flex-col items-center mt-5">
+//          <textarea
+//            id="message"
+//            rows="15"
+//            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+//            placeholder={q_and_a.answer ? "" : "Write your answer here..."}
+//            value={
+//              answer.hasOwnProperty(q_and_a.question)
+//                ? answer[q_and_a.question]
+//                : q_and_a.answer || ""
+//            }
+//            onChange={(event) => handleAnswerChange(q_and_a.question, event)}
+//          ></textarea>
+//          <div className="flex flex-row">
+//            <button
+//              className="text-white bg-slate-400 p-2 rounded-md mx-2"
+//              onClick={handlePrevious}
+//              disabled={selectedFileIndex === 0}
+//            >
+//              <FontAwesomeIcon className="pr-2" icon={faArrowLeft} />
+//              Previous
+//            </button>
+//            <button
+//              className="button bg-slate-800 text-white hover:text-black hover:bg-white"
+//              onClick={() =>
+//                handleUpdateAnswer(
+//                  q_and_a.question,
+//                  answer[q_and_a.question],
+//                  filename
+//                )
+//              }
+//            >
+//              {" "}
+//              Confirm
+//              <FontAwesomeIcon className="pl-2" icon={faArrowRight} />
+//            </button>
+//          </div>
+//        </div>
+//      </div>
+//    ));
+//  }
