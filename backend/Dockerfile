@@ -20,5 +20,10 @@ COPY . .
 RUN npm install react-scripts -g
 RUN npm install serve -g
 
+# update @svgr/webpack react-scripts dependency to amend nth-check vulnerability
+WORKDIR /usr/local/lib/node_modules/react-scripts
+RUN npm install @svgr/webpack@8.1.0
+WORKDIR /app
+
 # run npm start from package json
 CMD ["npm","start"] 
