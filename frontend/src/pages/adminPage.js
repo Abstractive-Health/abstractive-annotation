@@ -183,7 +183,7 @@ const AdminPage = () => {
     });
     if (!response.ok) {
       const errorMessage = await response.text();
-      throw new Error(`Unable to fetch questions: ${errorMessage}`);
+      throw new Error(`Unable to fetch questions: ${JSON.stringify(errorMessage)}`);
     } else {
       const data = await response.json();
       const questionValues = (data.questions || []).map(
