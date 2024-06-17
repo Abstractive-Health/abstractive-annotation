@@ -22,7 +22,7 @@ const UploadQuestion = () => {
     event.preventDefault();
     try {
       const is_admin = await fetch(
-        `http://localhost:3000/api/isAdmin?session_token=${session_token}`,
+        `${process.env.REACT_APP_API_URL}/api/isAdmin?session_token=${session_token}`,
         {
           method: "GET",
         }
@@ -40,7 +40,7 @@ const UploadQuestion = () => {
       return; // Missing the question and answertype
     }
     try {
-      const response = await fetch("http://localhost:3000/api/question", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
