@@ -174,7 +174,8 @@ const addFinished = (file_name) => {
       let rawdata = fs.readFileSync(databasePath);
       database = JSON.parse(rawdata);
     }
-    if (!(file_name in database["finished"])) {
+    const fileExists = database["finished"].includes(file_name)
+    if (!fileExists) {
       database["finished"].push(file_name);
     }
     saveDatabase();

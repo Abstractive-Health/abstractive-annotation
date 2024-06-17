@@ -5,5 +5,25 @@
 body{
     font-family: Arial, sans-serif;
     background-color: #202225;
-    height: 100vh;
+    height: 100%;
+}
+
+.abstractiveButton:disabled {
+    background-color: #dbdbdb;
+    color: black
+}
+
+.abstractiveButton:disabled:hover {
+    background-color: #dbdbdb;
+    color: black
+}
+
+.abstractiveButton:hover {
+    background-color: white;
+    color: black
+}
+
+.abstractiveButton:focus {
+    background-color: transparent;
+    color: white
 }
