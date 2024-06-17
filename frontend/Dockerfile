@@ -35,5 +35,7 @@ RUN npm install serve -g
 # Copy build artifacts from build image
 COPY --from=build /app/build /app/build/
 
+EXPOSE $PORT
+
 # run npm start from package json
 CMD ["npm","run","serve"] 
