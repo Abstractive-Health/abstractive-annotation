@@ -25,6 +25,8 @@ WORKDIR /usr/local/lib/node_modules/react-scripts
 RUN npm install @svgr/webpack@8.1.0
 WORKDIR /app
 
+ARG PORT
+ENV PORT=$PORT
 EXPOSE $PORT
 
 # run npm start from package json
