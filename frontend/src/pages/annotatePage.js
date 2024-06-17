@@ -5,39 +5,50 @@ import "bulma/css/bulma.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useOutletContext } from "react-router-dom";
+import { isEmpty } from "lodash";
 
 const AnnotatePage = () => {
-  const [isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin] =
-    useOutletContext();
+  // eslint-disable-next-line
+  const [isAdmin, checkAdmin] = useOutletContext(); 
   const [fileNames, setFileNames] = useState([]);
-  const [selectedFileIndex, setSelectedFileIndex] = useState(0);
+  const [selectedFileIndex, setSelectedFileIndex] = useState(-1);
   const [filePreview, setFilePreview] = useState(null);
-  const [isFinished, setIsFinished] = useState(false);
-  const [questions_and_answers, setquestions_and_answers] = useState([]);
-  const [answer, setAnswer] = useState({});
-
+  // const [isFinished, setIsFinished] = useState(false);
+  const [inputAnswers, setInputAnswers] = useState({});
+  const [error, setError] = useState("")
   const session_token = Cookies.get("session_token");
-  const filename = fileNames[selectedFileIndex];
-
+  const filename = selectedFileIndex === fileNames.length ? null : fileNames[selectedFileIndex];
+  const hasEmptyAnswers = isEmpty(inputAnswers) || Object.values(inputAnswers).some((answer) => !answer)
+  
+  // Page Load - get the file name first
   useEffect(() => {
-    const session_token = Cookies.get("session_token");
+    setError("")
     checkAdmin(session_token);
-  }, []);
-
-  useEffect(() => {
-    getQuestionsAndAnswers();
-  }, [filename]);
-
-  useEffect(() => {
     getFileNames();
-  }, []);
+  }, [session_token]);
 
+  // When file name updated (Next / Prev Buttons or Page Load)
   useEffect(() => {
-    fetchFinishedFiles();
-  }, [fileNames, selectedFileIndex]);
+    setError("")
+    if(filename) {
+      getQuestionsAndAnswers();
+    } else {
+      setInputAnswers({})
+    }
+  }, [selectedFileIndex]);
+
+  // useEffect(() => {
+  //   fetchFinishedFiles();
+  // }, [fileNames, selectedFileIndex]);
 
   const getQuestionsAndAnswers = async () => {
+    if(!filename){
+      setInputAnswers({})
+      return
+    } 
+
     try {
+      setError('Loading')
       const response = await fetch(
         `http://localhost:3000/api/qa?fileName=${filename}`,
         {
@@ -46,32 +57,39 @@ const AnnotatePage = () => {
       );
       if (!response.ok) {
         const errorMessage = await response.text();
+        setError(errorMessage)
         throw new Error(`Unable to fetch questions: ${errorMessage}`);
       }
       const data = await response.json();
-      setquestions_and_answers(data);
       // load original answers into state
       const originalAnswers = {};
-      data.forEach((q_and_a) => {
-        if (q_and_a.answer) originalAnswers[q_and_a.question] = q_and_a.answer;
+      (data || []).forEach((q_and_a) => {
+        originalAnswers[(q_and_a ||{}).question] = (q_and_a ||{}).answer;
       });
-      setAnswer(originalAnswers);
+      setError('')
+      setInputAnswers(originalAnswers)
     } catch (error) {
-      console.log("Error:", error);
+      setError("Error Fetching File Questions and Answers for file=", filename)
     }
   };
 
-  const handleAnswerChange = (question, event) => {
-    setAnswer((prevAnswers) => ({
-      ...prevAnswers,
-      [question]: event.target.value,
-    }));
-  };
 
-  const handleUpdateAnswer = async (filename) => {
-    for (const q_and_a of questions_and_answers) {
-      const question = q_and_a.question;
-      const answer = q_and_a.answer;
+  // Return true if unsuccessful
+  const handleUpdateAnswer = async (fileToShow) => {
+    if (hasEmptyAnswers) {
+      setError('All answers must be filled out')
+      return
+    }
+
+    let hasErrors = false;
+    for (const question of Object.keys(inputAnswers)) {
+      // no need to update
+      const answer = inputAnswers[question];
+      
+      if(!answer) {
+        continue
+      }
+    
       const response = await fetch(`http://localhost:3000/api/answer`, {
         method: "PATCH",
         headers: {
@@ -80,20 +98,39 @@ const AnnotatePage = () => {
         body: JSON.stringify({
           question: question,
           answer: answer,
-          fileName: filename,
+          fileName: fileToShow,
         }),
       });
       if (response.ok) {
-        console.log("Answer updated successfully");
-        setAnswer((prevAnswers) => ({ ...prevAnswers, [question]: answer })); // Just update the answer for the specific question in the state, not empty it
+        console.log("Answer updated successfully for question", question);
+        // Just update the answer for the specific question in the state, not empty it
       } else {
         console.log("Answer update failed");
+        hasErrors = true
       }
     }
-
-    handleCheckboxChange();
-    handleNext();
+    return hasErrors
   };
+
+  const handleSubmit = async (event, fileToSubmit) => {
+    event.preventDefault();
+    if (hasEmptyAnswers && selectedFileIndex !== fileNames.length) {
+      setError("Can't have empty answer"); // Should not reach here
+      return;
+    }
+    if (selectedFileIndex === fileNames.length) {
+      setError("Nothing left to annotate")
+      return;
+    }
+
+    const hasAPIErrors = await handleUpdateAnswer(fileToSubmit);
+    if (hasAPIErrors) {
+      setError("Error backend. Please try again")
+      return;
+    }
+    await handleCheckboxChange();
+    await handleNext();
+  }
 
   const getFileNames = async () => {
     try {
@@ -104,6 +141,7 @@ const AnnotatePage = () => {
         const errorMessage = await response.text();
         throw new Error(`Unable to fetch file names: ${errorMessage}`);
       }
+
       const data = await response.json();
       const finishedFilesResponse = await fetch(
         "http://localhost:3000/api/getFinished"
@@ -112,39 +150,62 @@ const AnnotatePage = () => {
       const sortedData = data.sort(
         (a, b) => finishedFiles.includes(a) - finishedFiles.includes(b)
       );
-      console.log("Allowed files", data);
-      console.log("FinishedFiles", finishedFiles);
-      console.log("sortedData", sortedData);
+
       setFileNames(sortedData);
       if (sortedData.length > 0) {
         handleFileChange(sortedData[0]);
+        setSelectedFileIndex(0)
       }
     } catch (error) {
-      console.log("Error:", error);
+      setError('Error Fetching Files')
     }
   };
 
-  const fetchFinishedFiles = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/getFinished");
-      const finishedFiles = await response.json();
-      setIsFinished(finishedFiles.includes(fileNames[selectedFileIndex]));
-    } catch (error) {
-      console.log("Error fetching finished files:", error);
-    }
-  };
+  // const fetchFinishedFiles = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:3000/api/getFinished");
+  //     const finishedFiles = await response.json();
+  //     setIsFinished(finishedFiles.includes(fileNames[selectedFileIndex]));
+  //   } catch (error) {
+  //     console.log("Error fetching finished files:", error);
+  //   }
+  // };
 
-  const handleFileChange = async (filename) => {
-    const response = await fetch(
-      `http://localhost:3000/api/files?filename=${encodeURIComponent(filename)}`
-    );
-    if (!response.ok) {
-      console.error(`Error fetching file ${filename}: ${response.statusText}`);
+  const handleFileChange = async (targetFile) => {
+    if (!targetFile) {
+      setFilePreview(
+        <div
+        style={{
+          // maxHeight: "600px",
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
+      >
+        <pre
+          style={{
+            whiteSpace: "pre-wrap",
+            wordWrap: "break-word",
+            textAlign: "left",
+          }}
+        >
+          No file to render.
+        </pre>
+      </div>
+      );
       return;
-    }
-    if (response.ok) {
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/files?filename=${encodeURIComponent(targetFile)}`
+      );
+      if (!response.ok) {
+        setError(`Error fetching file ${targetFile}: ${response.statusText}`);
+        return;
+      }
+
       const file = await response.blob();
-      const fileType = filename.split(".").pop();
+      const fileType = targetFile.split(".").pop();
       if (fileType === "pdf") {
         setFilePreview(
           <object
@@ -163,7 +224,7 @@ const AnnotatePage = () => {
           setFilePreview(
             <div
               style={{
-                maxHeight: "600px",
+                maxHeight: "1000px",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
@@ -201,20 +262,30 @@ const AnnotatePage = () => {
         };
         reader.readAsText(file);
       }
+    } catch(e) {
+      setError('Unable to fetch File')
     }
   };
 
-  const handlePrevious = () => {
-    if (selectedFileIndex > 0) {
-      setSelectedFileIndex(selectedFileIndex - 1);
-      handleFileChange(fileNames[selectedFileIndex - 1]);
+  const handlePrevious = (event) => {
+    event.preventDefault()
+    const prevSelectedFileIndex = selectedFileIndex - 1
+    if (prevSelectedFileIndex => 0) {
+      setSelectedFileIndex(prevSelectedFileIndex);
+      handleFileChange(fileNames[prevSelectedFileIndex]);
     }
   };
 
   const handleNext = () => {
-    if (selectedFileIndex < fileNames.length - 1) {
-      setSelectedFileIndex(selectedFileIndex + 1);
-      handleFileChange(fileNames[selectedFileIndex + 1]);
+    const nextSelectedFileIndex = selectedFileIndex + 1
+
+    // if current file is within range
+    if (nextSelectedFileIndex <= fileNames.length - 1) {
+      setSelectedFileIndex(nextSelectedFileIndex);
+      handleFileChange(fileNames[nextSelectedFileIndex]);
+    } else if (nextSelectedFileIndex === fileNames.length) {
+      setSelectedFileIndex(nextSelectedFileIndex);
+      handleFileChange(null);
     }
   };
 
@@ -229,15 +300,87 @@ const AnnotatePage = () => {
     try {
       const response = await fetch(`http://localhost:3000${endpoint}`, options);
       if (!response.ok) {
+        setError('Error updating finished state for file: ${response.statusText}`')
         throw new Error(
           `Error updating finished state for file: ${response.statusText}`
         );
       }
-      setIsFinished(true); // Update the isFinished state
+      // setIsFinished(true); // Update the isFinished state
     } catch (error) {
       console.log("Error:", error);
+      return true
     }
   };
+
+  const renderQuestions = () => {
+    if (selectedFileIndex === fileNames.length) return (<div>No Questions</div>);
+    return ;
+  }
+
+  const renderNoFiles = () => {
+    return (<p className="abstractivetitle">No Files to Annotate</p>)
+  }
+
+  const renderPreviewForm = () => {
+    return (
+      <>
+          <div className="h-full w-3/5 mb-10">{filePreview}</div>
+          <div className="mx-auto w-2/5">
+            <div className="text-white h-full bg-gray-800 rounded-r-lg overflow-auto">
+              <h2 className="text-white font-semibold text-xl mt-8 mx-10 text-left">
+                {fileNames[selectedFileIndex]}
+              </h2>
+              <form id="qaform">
+                {Object.keys(inputAnswers).map((question, i) => (
+                  <div key={question} className="p-4">
+                    <div className="flex flex-row">
+                      <span className="w-5 h-5 -mr-3 mt-2 bg-slate-700 transform rotate-45"></span>
+                      <p className="bg-slate-700 p-4 rounded-lg">
+                        {question}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center mt-5">
+                      <textarea
+                        id={`${question}`}
+                        rows="15"
+                        className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder={inputAnswers[question] || "Write your answer here..."}
+                        value={inputAnswers[question]}
+                        onChange={(event) => {
+                          event.preventDefault()
+                          setInputAnswers({...inputAnswers, [question]: event.target.value})
+                        }}
+                        />
+                    </div>
+                  </div>
+                ))}
+                <div className="flex flex-row">
+                  <button
+                    className="button text-white bg-slate-800 p-2 rounded-md mx-2 abstractiveButton"
+                    disabled={
+                      selectedFileIndex === 0 || (hasEmptyAnswers && selectedFileIndex < fileNames.length - 1)
+                    }
+                    onClick={(event) => handlePrevious(event)}
+                  >
+                    <FontAwesomeIcon className="pr-2" icon={faArrowLeft} />
+                    Previous
+                  </button>
+                  <button
+                    className="button bg-slate-800 text-white abstractiveButton"
+                    disabled={selectedFileIndex === fileNames.length || hasEmptyAnswers}
+                    onClick={(event)=>handleSubmit(event, filename)}
+                  >
+                    Save and Continue
+                    <FontAwesomeIcon className="pl-2" icon={faArrowRight} />
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+      </>
+    );
+  }
+
 
   return (
     <div className="upload">
@@ -259,70 +402,12 @@ const AnnotatePage = () => {
           </>
         )}
       </nav>
-      <div className="mx-auto w-3/4 my-5">
+      <div className="mx-auto w-3/4 mt-5 h-full">
+        <p className="abstractiveError">
+            { error ? `Error Encountered: ${error}` : '' }
+        </p>
         <div className="flex flex-row">
-          <div className="h-full w-3/5">{filePreview}</div>
-          <div className="mx-auto w-2/5">
-            <div className="text-white h-full bg-gray-800 rounded-r-lg overflow-auto">
-              <h2 className="text-white font-semibold text-xl mt-8 mx-10 text-left">
-                {fileNames[selectedFileIndex]}
-              </h2>
-              <form id="qaform" method="post">
-                {questions_and_answers.map((q_and_a) => (
-                  <div key={q_and_a.question} className="p-4">
-                    <div className="flex flex-row">
-                      <span className="w-5 h-5 -mr-3 mt-2 bg-slate-700 transform rotate-45"></span>
-                      <p className="bg-slate-700 p-4 rounded-lg">
-                        {q_and_a.question}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-center mt-5">
-                      <textarea
-                        id="message"
-                        rows="15"
-                        className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder={
-                          q_and_a.answer ? "" : "Write your answer here..."
-                        }
-                        value={
-                          answer.hasOwnProperty(q_and_a.question)
-                            ? answer[q_and_a.question]
-                            : q_and_a.answer || ""
-                        }
-                        onChange={(event) =>
-                          handleAnswerChange(q_and_a.question, event)
-                        }
-                      ></textarea>
-                    </div>
-                  </div>
-                ))}
-                <div className="flex flex-row">
-                  <button
-                    className="text-white bg-slate-400 p-2 rounded-md mx-2"
-                    onClick={handlePrevious}
-                    disabled={
-                      selectedFileIndex === 0 ||
-                      questions_and_answers.some(({ answer }) => !answer)
-                    }
-                  >
-                    <FontAwesomeIcon className="pr-2" icon={faArrowLeft} />
-                    Previous
-                  </button>
-                  <button
-                    className="button bg-slate-800 text-white hover:text-black hover:bg-white"
-                    disabled={questions_and_answers.some(
-                      ({ answer }) => !answer
-                    )}
-                    onClick={() => handleUpdateAnswer(filename)}
-                  >
-                    {" "}
-                    Confirm
-                    <FontAwesomeIcon className="pl-2" icon={faArrowRight} />
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          { !fileNames.length ? renderNoFiles() : renderPreviewForm() }
         </div>
       </div>
     </div>
