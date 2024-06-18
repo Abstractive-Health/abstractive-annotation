@@ -2,9 +2,6 @@
 This repo is for spinning up a UI on a virtual desktop for annotations
 of clinical notes for Abstractive Health
 
-# Deployments
-Send/Email Docker Image to many architectures (AMD/ARM64) - See Vince and Ritika
-
 ## Installation
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
@@ -20,3 +17,27 @@ Send/Email Docker Image to many architectures (AMD/ARM64) - See Vince and Ritika
 
 # Run docker compose for development (Hot reloading)
 `docker-compose -f docker-compose-dev.yml up -d --build`
+
+# Deployments
+Send/Email Docker Image to many architectures (AMD/ARM64) - See Vince
+
+## Push to Prod
+
+If the build on github passes and there are no vulnerabilities
+
+1. When ready, push the latest built image up to the corresponding AWS Image Repo: 
+    * [prod-ah-useast1-anote-ui](https://us-east-1.console.aws.amazon.com/ecr/repositories/private/578071040470/prod-ah-useast1-anote-ui?region=us-east-1)
+    * [prod-ah-useast1-anote-api](https://us-east-1.console.aws.amazon.com/ecr/repositories/private/578071040470/prod-ah-useast1-anote-api?region=us-east-1)
+2. Click on the repo then click the button `view push commands`
+3. Remember on the second step to specify the file Dockerfile during the build
+
+```
+cd frontend
+docker build --build-arg REACT_APP_API_URL="https://anote-api.abstractive.ai" -f Dockerfile -t prod-ah-useast1-anote-ui .
+```
+```
+cd backend
+docker build -f Dockerfile -t prod-ah-useast1-anote-api .
+```
+
+4. To see your changes, you have to force a new deployment of [the service]on the EC2 console. Under tasks, you should see the sha-digest of your corresponding image.

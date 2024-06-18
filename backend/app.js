@@ -39,7 +39,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'none'; font-src 'self' http://localhost:3000;"
+    `default-src 'none'; font-src 'self' ${process.env.API_HOST};`
   );
   next();
 });

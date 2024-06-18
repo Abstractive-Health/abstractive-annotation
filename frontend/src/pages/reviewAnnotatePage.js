@@ -49,7 +49,7 @@ const ReviewAnnotatePage = () => {
   const getQuestionsAndAnswers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/qa?fileName=${filename}`,
+        `${process.env.REACT_APP_API_URL}/api/qa?fileName=${filename}`,
         {
           method: "GET",
         }
@@ -86,7 +86,7 @@ const ReviewAnnotatePage = () => {
       return;
     }
 
-    const response = await fetch(`http://localhost:3000/api/answer`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/answer`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -148,7 +148,7 @@ const ReviewAnnotatePage = () => {
     try {
       const data = location.state.info.map((item) => item["File Name"]);
       const finishedFilesResponse = await fetch(
-        "http://localhost:3000/api/getFinished"
+        `${process.env.REACT_APP_API_URL}/api/getFinished`
       );
 
       console.log("data1");
@@ -161,7 +161,7 @@ const ReviewAnnotatePage = () => {
       for (let i = 0; i < sortedData.length; i++) {
         setLoader(i + 1);
         const response = await fetch(
-          `http://localhost:3000/api/files?filename=${encodeURIComponent(
+          `${process.env.REACT_APP_API_URL}/api/files?filename=${encodeURIComponent(
             sortedData[i]
           )}`
         );
@@ -183,7 +183,7 @@ const ReviewAnnotatePage = () => {
 
   const fetchFinishedFiles = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/getFinished");
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/getFinished`);
       const finishedFiles = await response.json();
       setIsFinished(finishedFiles.includes(fileNames[selectedFileIndex]));
     } catch (error) {
@@ -193,7 +193,7 @@ const ReviewAnnotatePage = () => {
 
   const handleFileChange = async (filename, attempt = 0) => {
     const response = await fetch(
-      `http://localhost:3000/api/files?filename=${encodeURIComponent(filename)}`
+      `${process.env.REACT_APP_API_URL}/api/files?filename=${encodeURIComponent(filename)}`
     );
     if (!response.ok) {
       console.error(`Error fetching file ${filename}: ${response.statusText}`);
@@ -288,7 +288,7 @@ const ReviewAnnotatePage = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:3000${endpoint}`, options);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, options);
       if (!response.ok) {
         throw new Error(
           `Error updating finished state for file: ${response.statusText}`
@@ -301,7 +301,7 @@ const ReviewAnnotatePage = () => {
   };
 
   const handleThumbsUp = async (question, filename) => {
-    const response = await fetch(`http://localhost:3000/api/thumbsUp`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/thumbsUp`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -321,7 +321,7 @@ const ReviewAnnotatePage = () => {
   };
 
   const handleThumbsDown = async (question, filename) => {
-    const response = await fetch(`http://localhost:3000/api/thumbsDown`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/thumbsDown`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -15,7 +15,7 @@ function App() {
   const checkAdmin = async (session_token) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/isAdmin?session_token=${session_token}`
+        `${process.env.REACT_APP_API_URL}/api/isAdmin?session_token=${session_token}`
       );
       if (!response.ok) {
         setIsAdmin(false);
