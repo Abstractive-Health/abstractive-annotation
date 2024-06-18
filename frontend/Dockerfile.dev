@@ -22,7 +22,6 @@ RUN npm install react-scripts -g
 # add app
 COPY . ./
 
-ARG PORT
 EXPOSE $PORT
 
 # run npm start from package json
