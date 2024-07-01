@@ -63,6 +63,8 @@
     "react-scripts": "5.0.1"
   },
   "overrides": {
-    "nth-check": "^2.0.1"
+    "nth-check": "^2.0.1",
+    "underscore.string": "3.3.5",
+    "postcss": "8.4.31"
   }
 }
