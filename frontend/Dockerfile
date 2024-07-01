@@ -44,4 +44,4 @@ COPY --from=build /app/build /app/build/
 EXPOSE $PORT
 
 # run npm start from package json
-CMD ["npm","run","serve"] 
+CMD ["npm","run","serve", "--","--port","3001"]
