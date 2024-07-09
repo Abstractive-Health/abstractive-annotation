@@ -177,12 +177,12 @@ const AdminPage = () => {
   // };
 
   const getEverything = async () => {
-    const response = await fetch("http://localhost:3000/api/everything", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/everything"`, {
       method: "GET",
     });
     if (!response.ok) {
       const errorMessage = await response.text();
-      throw new Error(`Unable to fetch questions: ${errorMessage}`);
+      throw new Error(`Unable to fetch questions: ${JSON.stringify(errorMessage)}`);
     } else {
       const data = await response.json();
       setJsonData(data); // JSON.parse is not needed as response.json() already parses the response.
@@ -192,7 +192,7 @@ const AdminPage = () => {
   const getUsers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/AllUsername?session_token=${session_token}`
+        `${process.env.REACT_APP_API_URL}/api/AllUsername?session_token=${session_token}`
       );
       const data = await response.json();
       setUsers(data);
@@ -203,7 +203,7 @@ const AdminPage = () => {
 
   const getAllFileNames = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/fileNames");
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/fileNames`);
       const data = await response.json();
       setFileNames(data);
     } catch (error) {
@@ -214,7 +214,7 @@ const AdminPage = () => {
   const getFileNamesByUser = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/AllowedFiles?username=${selectedUser}`,
+        `${process.env.REACT_APP_API_URL}/api/AllowedFiles?username=${selectedUser}`,
         {
           method: "GET",
           headers: {
@@ -231,7 +231,7 @@ const AdminPage = () => {
 
   const handleFileCheck = async (fileName, isChecked) => {
     const url = isChecked ? "/api/addAllowedFile" : "/api/deleteAllowedFile";
-    const response = await fetch(`http://localhost:3000${url}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -255,7 +255,7 @@ const AdminPage = () => {
       if (userFileNames.includes(fileName)) continue;
 
       // Add this file to the user's access
-      const response = await fetch(`http://localhost:3000/api/addAllowedFile`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/addAllowedFile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

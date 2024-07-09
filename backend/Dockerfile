@@ -26,4 +26,4 @@ RUN npm install @svgr/webpack@8.1.0
 WORKDIR /app
 
 # run npm start from package json
-CMD ["npm","start"] 
+CMD ["npm","start","--","--port","3000"]

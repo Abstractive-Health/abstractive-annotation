@@ -50,7 +50,7 @@ const AnnotatePage = () => {
     try {
       setError('Loading')
       const response = await fetch(
-        `http://localhost:3000/api/qa?fileName=${filename}`,
+        `${process.env.REACT_APP_API_URL}/api/qa?fileName=${filename}`,
         {
           method: "GET",
         }
@@ -90,7 +90,7 @@ const AnnotatePage = () => {
         continue
       }
     
-      const response = await fetch(`http://localhost:3000/api/answer`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/answer`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +135,7 @@ const AnnotatePage = () => {
   const getFileNames = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/AllowedFiles?session_token=${session_token}`
+        `${process.env.REACT_APP_API_URL}/api/AllowedFiles?session_token=${session_token}`
       );
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -144,7 +144,7 @@ const AnnotatePage = () => {
 
       const data = await response.json();
       const finishedFilesResponse = await fetch(
-        "http://localhost:3000/api/getFinished"
+        `${process.env.REACT_APP_API_URL}/api/getFinished`
       );
       const finishedFiles = await finishedFilesResponse.json();
       const sortedData = data.sort(
@@ -197,7 +197,7 @@ const AnnotatePage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/files?filename=${encodeURIComponent(targetFile)}`
+        `${process.env.REACT_APP_API_URL}/api/files?filename=${encodeURIComponent(targetFile)}`
       );
       if (!response.ok) {
         setError(`Error fetching file ${targetFile}: ${response.statusText}`);
@@ -298,7 +298,7 @@ const AnnotatePage = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:3000${endpoint}`, options);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, options);
       if (!response.ok) {
         setError('Error updating finished state for file: ${response.statusText}`')
         throw new Error(
