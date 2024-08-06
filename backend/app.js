@@ -197,7 +197,6 @@ app.post("/api/question", (req, res) => {
     const question = req.body.question;
     const answerType = req.body.answerType;
     db.createQuestion(question, answerType);
-    console.log("everything is fine");
     res.status(200).json({ question, answerType });
   } catch {
     res.status(500);
