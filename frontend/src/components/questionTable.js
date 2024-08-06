@@ -21,7 +21,6 @@ const QuestionTable = () => {
       if (data) {
         new_data = JSON.parse(data);
       }
-      console.log(new_data, "este es the new data");
       setQuestions(new_data);
     } catch (error) {
       console.log("Error:", error);
