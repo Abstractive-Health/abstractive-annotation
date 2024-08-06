@@ -1,1 +1,8 @@
-{"questions":["Summarize this outpatient note."],"file_names":{},"finished":[],"review":{}}
+{
+  "questions": [
+    { "value": "Summarize this outpatient note.", "answerType": "TextArea" }
+  ],
+  "file_names": {},
+  "finished": [],
+  "review": {}
+}

@@ -104,13 +104,13 @@ const updateDatabase = () => {
  * Create a new question in the database.
  * @param {String} question - the question to be added.
  */
-const createQuestion = (question) => {
+const createQuestion = (question, answerType) => {
   try {
-    if (database.questions.includes(question)) {
+    if (database.questions.some(({ value }) => value == question)) {
       console.log("Question already exists");
       return;
     }
-    database["questions"].push(question);
+    database["questions"].push({ value: question, answerType });
     Object.keys(database["file_names"]).forEach((file) => {
       database["file_names"][file].push("");
     });
@@ -126,7 +126,9 @@ const createQuestion = (question) => {
  */
 const deleteQuestionAndAnswer = (question) => {
   try {
-    const question_index = database["questions"].indexOf(question);
+    const question_index = database["questions"].findIndex(
+      ({ value }) => value === question
+    );
     if (question_index === -1) {
       console.log("Question not found");
       return;
@@ -153,7 +155,9 @@ const updateAnswer = (file_name, question, answer) => {
       let rawdata = fs.readFileSync(databasePath);
       database = JSON.parse(rawdata);
     }
-    const question_index = database["questions"].indexOf(question);
+    const question_index = database["questions"].findIndex(
+      ({ value }) => value === question
+    );
     if (question_index === -1) {
       return;
     }
@@ -174,7 +178,7 @@ const addFinished = (file_name) => {
       let rawdata = fs.readFileSync(databasePath);
       database = JSON.parse(rawdata);
     }
-    const fileExists = database["finished"].includes(file_name)
+    const fileExists = database["finished"].includes(file_name);
     if (!fileExists) {
       database["finished"].push(file_name);
     }
@@ -307,7 +311,8 @@ const getAllQuestionAndAnswerFromFileName = (file_name) => {
     let ret = [];
     for (let i = 0; i < database.questions.length; i++) {
       ret.push({
-        question: database.questions[i],
+        question: database.questions[i].value,
+        answerType: database.questions[i].answerType,
         answer: answers[i],
       });
     }

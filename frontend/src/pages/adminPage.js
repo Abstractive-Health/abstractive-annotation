@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 
 const AdminPage = () => {
-  const [isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin] = useOutletContext();
+  const [isAdmin, setIsAdmin, isSignedIn, setIsSignedIn, checkAdmin] =
+    useOutletContext();
   const session_token = Cookies.get("session_token");
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -185,6 +186,10 @@ const AdminPage = () => {
       throw new Error(`Unable to fetch questions: ${errorMessage}`);
     } else {
       const data = await response.json();
+      const questionValues = (data.questions || []).map(
+        (question) => question.value
+      );
+      data["questions"] = questionValues;
       setJsonData(data); // JSON.parse is not needed as response.json() already parses the response.
     }
   };

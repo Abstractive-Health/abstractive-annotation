@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import fetch from "cross-fetch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const QuestionTable = () => {
   const [questions, setQuestions] = useState([]);
@@ -21,26 +21,29 @@ const QuestionTable = () => {
       if (data) {
         new_data = JSON.parse(data);
       }
-      setQuestions(new_data);;
+      setQuestions(new_data);
     } catch (error) {
       console.log("Error:", error);
     }
   };
 
   const handleDelete = async (question_to_delete) => {
-    const session_token = Cookies.get("session_token")
+    const session_token = Cookies.get("session_token");
 
     try {
-      const is_admin = await fetch(`http://localhost:3000/api/isAdmin?session_token=${session_token}`, {
-        method: "GET"
-      });
+      const is_admin = await fetch(
+        `http://localhost:3000/api/isAdmin?session_token=${session_token}`,
+        {
+          method: "GET",
+        }
+      );
       if (!is_admin.ok) {
         window.alert("You are not admin");
         return;
       }
     } catch (error) {
       console.error("Error checking admin status:", error);
-      return;  // if there's an error, we probably want to stop execution
+      return; // if there's an error, we probably want to stop execution
     }
     const response = await fetch(
       `http://localhost:3000/api/question?&question=${question_to_delete}`,
@@ -129,6 +132,16 @@ const QuestionTable = () => {
                   fontSize: "1.3rem",
                 }}
               >
+                Answer Type
+              </th>
+              <th
+                style={{
+                  borderBottom: "2px solid #fff",
+                  paddingBottom: "0.5rem",
+                  color: "white",
+                  fontSize: "1.3rem",
+                }}
+              >
                 Actions
               </th>
             </tr>
@@ -142,7 +155,14 @@ const QuestionTable = () => {
                       paddingTop: "0.5rem",
                     }}
                   >
-                    {question}
+                    {question.value}
+                  </td>
+                  <td
+                    style={{
+                      paddingTop: "0.5rem",
+                    }}
+                  >
+                    {question.answerType}
                   </td>
                   <td
                     style={{
@@ -150,7 +170,7 @@ const QuestionTable = () => {
                     }}
                   >
                     <button
-                      onClick={() => handleDelete(question)}
+                      onClick={() => handleDelete(question.value)}
                       style={{
                         backgroundColor: "#ff6347",
                         color: "#fff",

@@ -1,29 +1,43 @@
 import React, { useEffect, useState } from "react";
 import fetch from "cross-fetch";
 import Table from "./questionTable";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const UploadQuestion = () => {
   const [question, setQuestion] = useState("");
-  const [all_file_names, setAllFileNames] = useState([]);
-  const session_token = Cookies.get("session_token")
+  const [answerType, setAnswerType] = useState("TextArea");
+  const session_token = Cookies.get("session_token");
 
   const handleQuestionChange = (event) => {
+    event.preventDefault();
     setQuestion(event.target.value);
   };
 
-  const handleSubmit = async (file_name) => {
+  const handleAnswerTypeChange = (event) => {
+    event.preventDefault();
+    setAnswerType(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
-      const is_admin = await fetch(`http://localhost:3000/api/isAdmin?session_token=${session_token}`, {
-        method: "GET"
-      });
+      const is_admin = await fetch(
+        `http://localhost:3000/api/isAdmin?session_token=${session_token}`,
+        {
+          method: "GET",
+        }
+      );
       if (!is_admin.ok) {
         window.alert("You are not admin");
         return;
       }
     } catch (error) {
       console.error("Error checking admin status:", error);
-      return;  // if there's an error, we probably want to stop execution
+      return; // if there's an error, we probably want to stop execution
+    }
+    if (!question || !answerType) {
+      console.error("Missing question or answer type");
+      return; // Missing the question and answertype
     }
     try {
       const response = await fetch("http://localhost:3000/api/question", {
@@ -32,12 +46,14 @@ const UploadQuestion = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          question: question,
+          question,
+          answerType,
         }),
       });
       if (response.ok) {
         console.log("Question uploaded successfully!");
         setQuestion("");
+        setAnswerType("TextArea");
         window.location.reload();
       } else {
         console.log("Question upload failed");
@@ -47,32 +63,49 @@ const UploadQuestion = () => {
     }
   };
 
-
   return (
     <div>
-      <div className="upload" style={containerStyle}>
-        <textarea
-            style={{
-              width: "70%",
-              marginLeft: "10VW",
-              fontSize: "16px",
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #3498db;",
-              resize: "vertical",
-            }}
-          type="text"
-          value={question}
-          onChange={handleQuestionChange}
-          rows="4"
-          cols="50"
-        />
-        <button
-            style={{ ...buttonStyle, backgroundColor: "#3498db", marginLeft: "2%" }}
-            onClick={() => handleSubmit(question)}
-          >
-            Submit
-        </button>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <form style={containerStyle}>
+          <div style={formItemStyle}>
+            <h3 style={formLabelStyle}>Add Your Questions Here:</h3>
+            <textarea
+              style={{
+                fontSize: "16px",
+                borderRadius: "5px",
+                border: "1px solid #3498db",
+                resize: "vertical",
+              }}
+              type="text"
+              value={question}
+              onChange={handleQuestionChange}
+              rows="1"
+              cols="50"
+            />
+          </div>
+          <div style={formItemStyle}>
+            <h3 style={formLabelStyle}>Select Answer type:</h3>
+            <select
+              name="choice"
+              defaultValue={"TextArea"}
+              onChange={handleAnswerTypeChange}
+            >
+              <option value="TextArea">Text Area</option>
+              <option value="RadioButton">Radio Button</option>
+            </select>
+          </div>
+          <div style={{ ...formItemStyle, justifyContent: "flex-end" }}>
+            <button
+              style={{
+                ...buttonStyle,
+                backgroundColor: "#3498db",
+              }}
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
       <Table className="upload" />
     </div>
@@ -92,12 +125,25 @@ const buttonStyle = {
   cursor: "pointer",
   borderRadius: "12px",
   width: "100px",
-  marginLeft: "5vw",
 };
 
 const containerStyle = {
   display: "flex",
   flexDirection: "row",
-  alignItems: "center", // Optional, if you want the elements vertically aligned
+  width: "80%",
+  justifyContent: "space-evenly",
 };
+
+const formItemStyle = {
+  display: "flex",
+  flexDirection: "column",
+};
+
+const formLabelStyle = {
+  fontSize: "20px",
+  textAlign: "left",
+  fontWeight: "600",
+  marginBottom: "20px",
+};
+
 export default UploadQuestion;
