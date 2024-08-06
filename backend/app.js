@@ -193,9 +193,15 @@ app.get("/api/files", (req, res) => {
 
 // Create a question
 app.post("/api/question", (req, res) => {
-  const question = req.body.question;
-  db.createQuestion(question);
-  res.json(question);
+  try {
+    const question = req.body.question;
+    const answerType = req.body.answerType;
+    db.createQuestion(question, answerType);
+    console.log("everything is fine");
+    res.status(200).json({ question, answerType });
+  } catch {
+    res.status(500);
+  }
 });
 
 // Get all questions

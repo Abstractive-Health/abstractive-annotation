@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   dev-backend:
@@ -11,6 +11,7 @@ services:
       - 3000:3000
   dev-frontend:
     image: dev-ah-annotations-frontend:latest
+    restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev

@@ -1,39 +1,48 @@
 /* Basic page styling */
-h3{
-    color:white;
+h3 {
+  color: white;
 }
-.abstractivetitle{
-    font-size: 30px;
-    font-weight: bolder;
-    color: white;
-    text-align: center;
-    padding-top: 40px;
-    padding-bottom: 20px;
+.abstractivetitle {
+  font-size: 30px;
+  font-weight: bolder;
+  color: white;
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 20px;
 }
 
-.abstractiveError{
-    font-size: 30px;
-    font-weight: bolder;
-    color: red;
-    text-align: center;
-    padding-top: 40px;
-    padding-bottom: 20px;
+.abstractiveError {
+  font-size: 30px;
+  font-weight: bolder;
+  color: red;
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 20px;
 }
-.customize{
-    text-align: center;
-    background-color: #1f2225;
+
+.abstractiveLoading {
+  font-size: 30px;
+  font-weight: bolder;
+  color: white;
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 20px;
 }
-.App{
-    text-align: center;
+.customize {
+  text-align: center;
+  background-color: #1f2225;
 }
-.download{
-    text-align: center;
+.App {
+  text-align: center;
 }
-.upload{
-    text-align: center;
+.download {
+  text-align: center;
 }
-.annotate{
-    text-align: center;
+.upload {
+  text-align: center;
+}
+.annotate {
+  text-align: center;
 }
 
 /* Container styling */
@@ -71,29 +80,29 @@ nav li {
 
 /* RedirectButton styling */
 .redirectButton {
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: bold;
-    transition: all 0.2s ease-in-out;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 10px 20px;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 /* RedirectButton hover effect */
 .redirectButton:hover {
-    color: #defe47;
+  color: #defe47;
 }
 /* .redirectButton:active {
     border-bottom: 3px solid #defe47;
 } */
 .redirectButton.active {
-    /* your active button style goes here, for example: */
-    background-color: #008CBA; /* Blue */
-    color: white;
+  /* your active button style goes here, for example: */
+  background-color: #008cba; /* Blue */
+  color: white;
 }
 /* Additional styles for the DisplayFile component can be added here if necessary */

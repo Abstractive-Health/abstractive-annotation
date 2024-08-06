@@ -18,7 +18,7 @@ const CustomizePage = () => {
         <RedirectButton buttonText="Review" buttonUrl="/review" />
       </nav>
       <br />
-      <h3 style={{"fontSize": "20px", "textAlign": "left", "marginLeft": "10%", "fontWeight": "600"}}>Add Your Questions Here:</h3>
+
       <br />
       <UploadQuestion />
       {/* <Table /> */}

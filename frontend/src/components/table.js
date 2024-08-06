@@ -109,6 +109,10 @@ const Table = () => {
       throw new Error(`Unable to fetch questions: ${errorMessage}`);
     } else {
       const data = await response.json();
+      const questionValues = (data.questions || []).map(
+        (question) => question.value
+      );
+      data["questions"] = questionValues;
       setJsonData(data);
     }
   };
