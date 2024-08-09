@@ -33,11 +33,11 @@ If the build on github passes and there are no vulnerabilities
 
 ```
 cd frontend
-docker build --build-arg REACT_APP_API_URL="https://anote-api.abstractive.ai" -f Dockerfile -t prod-ah-useast1-anote-ui .
+docker build --platform linux/amd64 --build-arg REACT_APP_API_URL="https://anote-api.abstractive.ai" -f Dockerfile -t prod-ah-useast1-anote-ui .
 ```
 ```
 cd backend
-docker build -f Dockerfile -t prod-ah-useast1-anote-api .
+docker build --platform linux/amd64 -f Dockerfile -t prod-ah-useast1-anote-api .
 ```
 
 4. To see your changes, you have to force a new deployment of [the service]on the EC2 console. Under tasks, you should see the sha-digest of your corresponding image.

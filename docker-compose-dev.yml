@@ -9,8 +9,6 @@ services:
     stop_signal: SIGINT
     ports:
       - 3000:3000
-    expose:
-      - 3000
     env_file:
       - ./backend/.env.development
   dev-frontend:
@@ -22,8 +20,6 @@ services:
     stop_signal: SIGINT
     ports:
       - 3001:3001
-    expose:
-      - 3001
     volumes:
       - /app/node_modules
       - ./frontend:/app
