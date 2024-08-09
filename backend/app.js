@@ -44,6 +44,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// AWS Health Check
+app.get("/", (req, res) => {
+  res.status(200).send("Healthy");
+});
+
 // Signup
 app.post("/api/signup", (req, res) => {
   const username = req.body.username;
