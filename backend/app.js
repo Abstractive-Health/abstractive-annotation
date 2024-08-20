@@ -63,12 +63,12 @@ app.post("/api/login", (req, res) => {
   const password = req.body.password;
   const user = pw.getUser(username);
   if (user === undefined) {
-    res.status(401).send("User not found");
+    res.status(403).json({ message: "Incorrect user or password" });
     return;
   }
 
   if (!pw.verifyPassword(username, password)) {
-    res.status(402).send("Incorrect password");
+    res.status(403).json({ message: "Incorrect user or password" });
     return;
   }
 
