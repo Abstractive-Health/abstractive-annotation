@@ -28,13 +28,13 @@ const LoginPage = () => {
         }
         return res.json();
       }) // parsing the response
-      .catch((e) => {
-        alert("Invalid user or password");
-      })
       .then((data) => {
         Cookies.set("session_token", data.session_token); // setting the cookie
         navigate("/");
         alert("Successfully logged in");
+      })
+      .catch((e) => {
+        alert("Invalid user or password");
       });
   };
   return (
