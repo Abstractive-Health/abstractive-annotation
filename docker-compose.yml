@@ -9,6 +9,8 @@ services:
     stop_signal: SIGINT
     ports:
       - 3000:3000
+    env_file:
+      - ./backend/.env.production
   prod-frontend:
     image: prod-ah-annotations-frontend:latest
     build:
@@ -18,4 +20,4 @@ services:
     ports:
       - 3001:3001
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.production

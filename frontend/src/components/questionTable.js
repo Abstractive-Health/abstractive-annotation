@@ -9,7 +9,7 @@ const QuestionTable = () => {
 
   const getQuestions = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/question", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/question`, {
         method: "GET",
       });
       if (!response.ok) {
@@ -32,7 +32,7 @@ const QuestionTable = () => {
 
     try {
       const is_admin = await fetch(
-        `http://localhost:3000/api/isAdmin?session_token=${session_token}`,
+        `${process.env.REACT_APP_API_URL}/api/isAdmin?session_token=${session_token}`,
         {
           method: "GET",
         }
@@ -46,7 +46,7 @@ const QuestionTable = () => {
       return; // if there's an error, we probably want to stop execution
     }
     const response = await fetch(
-      `http://localhost:3000/api/question?&question=${question_to_delete}`,
+      `${process.env.REACT_APP_API_URL}/api/question?&question=${question_to_delete}`,
       {
         method: "DELETE",
       }

@@ -22,7 +22,7 @@ function SignupPage() {
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
 
-    fetch('http://localhost:3000/api/signup', {
+    fetch(`${process.env.REACT_APP_API_URL}/api/signup`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

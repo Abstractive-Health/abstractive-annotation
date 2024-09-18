@@ -8,6 +8,9 @@ WORKDIR /app
 # needed for producton?
 ENV PATH /app/node_modules/.bin:$PATH
 
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 # update npm to latest
 RUN npm install npm@latest -g
 
@@ -26,6 +29,9 @@ RUN npm run build
 FROM node:21-alpine
 WORKDIR /app
 
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 # update npm to latest
 RUN npm install npm@latest -g
 
@@ -35,5 +41,7 @@ RUN npm install serve -g
 # Copy build artifacts from build image
 COPY --from=build /app/build /app/build/
 
+EXPOSE $PORT
+
 # run npm start from package json
-CMD ["npm","run","serve"] 
+CMD ["npm","run","serve","--port 3001"]

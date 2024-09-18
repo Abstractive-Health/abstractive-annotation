@@ -8,6 +8,9 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH for hot reloading
 ENV PATH /app/node_modules/.bin:$PATH
 
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 # update npm to latest
 RUN npm install npm@latest -g
 
@@ -19,5 +22,7 @@ RUN npm install react-scripts -g
 # add app
 COPY . ./
 
+EXPOSE $PORT
+
 # run npm start from package json
-CMD ["npm","run","dev"] 
+CMD ["npm","run","start","--port 3001"] 

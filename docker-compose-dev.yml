@@ -9,6 +9,8 @@ services:
     stop_signal: SIGINT
     ports:
       - 3000:3000
+    env_file:
+      - ./backend/.env.development
   dev-frontend:
     image: dev-ah-annotations-frontend:latest
     restart: always
@@ -22,4 +24,4 @@ services:
       - /app/node_modules
       - ./frontend:/app
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.development
