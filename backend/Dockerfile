@@ -25,6 +25,9 @@ WORKDIR /usr/local/lib/node_modules/react-scripts
 RUN npm install @svgr/webpack@8.1.0
 WORKDIR /app
 
+# busybox vulnerability fix (CVE-2023-42366)
+RUN apk update && apk upgrade busybox
+
 ENV PORT=3000
 EXPOSE 3000 
 
