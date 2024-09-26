@@ -29,6 +29,9 @@ RUN npm run build
 FROM node:21-alpine
 WORKDIR /app
 
+# busybox vulnerability fix (CVE-2023-42366)
+RUN apk update && apk upgrade busybox
+
 ARG REACT_APP_API_URL
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
