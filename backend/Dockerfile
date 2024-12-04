@@ -23,6 +23,11 @@ RUN npm install serve -g
 # update @svgr/webpack react-scripts dependency to amend nth-check vulnerability
 WORKDIR /usr/local/lib/node_modules/react-scripts
 RUN npm install @svgr/webpack@8.1.0
+
+# do the same for postcss
+WORKDIR /usr/local/lib/node_modules/react-scripts/node_modules/resolve-url-loader
+RUN npm install postcss@8.4.31
+
 WORKDIR /app
 
 ENV PORT=3000
