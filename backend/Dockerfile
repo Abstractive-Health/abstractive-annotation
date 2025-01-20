@@ -30,6 +30,9 @@ RUN npm install postcss@8.4.31
 
 WORKDIR /app
 
+# busybox vulnerability fix (CVE-2023-42366)
+RUN apk update && apk upgrade busybox
+
 ENV PORT=3000
 EXPOSE 3000 
 
